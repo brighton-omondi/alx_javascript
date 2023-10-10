@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <script>
+        // Function to add an item to the cart
+        function addItemToCart(item) {
+            sessionStorage.setItem(item, true);
+            displayCart();
+        }
+
+        // Function to create the store and display available items
+        function createStore() {
+            const ul = document.createElement("ul");
+            const availableItems = ["Shampoo", "Soap", "Sponge", "Water"];
+
+            availableItems.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                li.addEventListener("click", () => addItemToCart(item));
+                ul.appendChild(li);
+            });
+
+            document.body.appendChild(ul);
+        }
+
+        // Function to display the cart contents
+        function displayCart() {
+            const cartCount = Object.keys(sessionStorage).length;
+
+            if (cartCount > 0) {
+                const p = document.createElement("p");
+                p.textContent = `You previously had ${cartCount} item(s) in your cart.`;
+                document.body.appendChild(p);
+            }
+        }
+
+        // Call the main functions
+        createStore();
+        displayCart();
+    </script>
+</body>
+</html>

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cookie</title>
 </head>
 <body>
     <input type="text" id="firstname" placeholder="Firstname">
@@ -12,32 +10,36 @@
     <h1>Cookies</h1>
     <button onclick="showCookies()">Show the cookies</button>
     <p id="cookieInfo"></p>
-
     <script>
         function setCookies() {
             const firstname = document.getElementById('firstname').value;
             const email = document.getElementById('email').value;
 
-            // Date object for the expiration date
+            // Create a Date object for the expiration date
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 10); // 10 days from now
 
-            // A cookie with the 'expires' attribute set to the expiration date
+            // Create a cookie with the 'expires' attribute set to the expiration date
             document.cookie = `firstname=${firstname}; expires=${expirationDate.toUTCString()}`;
             document.cookie = `email=${email}; expires=${expirationDate.toUTCString()}`;
         }
 
-        function showCookies() {
+        function getCookie(name) {
             const cookies = document.cookie.split('; ');
-            const cookieInfo = {};
-
             for (const cookie of cookies) {
-                const [name, value] = cookie.split('=');
-                cookieInfo[name] = value;
+                const [cookieName, cookieValue] = cookie.split('=');
+                if (cookieName === name) {
+                    return decodeURIComponent(cookieValue);
+                }
             }
+            return '';
+        }
 
+        function showCookies() {
+            const email = getCookie('email');
+            const firstname = getCookie('firstname');
             const cookieInfoElement = document.getElementById('cookieInfo');
-            cookieInfoElement.textContent = JSON.stringify(cookieInfo, null, 2);
+            cookieInfoElement.textContent = `Email: ${email} - Firstname: ${firstname}`;
         }
     </script>
 </body>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Shopping Cart</title>
+</head>
+<body>
+    <script>
+        // Function to check if session storage is available
+        function isSessionStorageAvailable() {
+            try {
+                const testKey = "test";
+                sessionStorage.setItem(testKey, testKey);
+                sessionStorage.removeItem(testKey);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Array of available items
+        const availableItems = ["Shampoo", "Soap", "Sponge", "Water"];
+
+        // Check if session storage is available
+        if (!isSessionStorageAvailable()) {
+            alert("Sorry, your browser does not support Web storage. Try again with a better one.");
+        } else {
+            // Call the main functions
+            createStore();
+            displayCart();
+        }
+
+        // Function to parse the cart from session storage
+        function getCartFromStorage() {
+            const cartString = sessionStorage.getItem("cart");
+            if (cartString) {
+                return JSON.parse(cartString);
+            } else {
+                return {};
+            }
+        }
+
+        // Function to add an item to the cart
+        function addItemToCart(item) {
+            const cart = getCartFromStorage();
+            if (cart[item]) {
+                cart[item]++;
+            } else {
+                cart[item] = 1;
+            }
+            sessionStorage.setItem("cart", JSON.stringify(cart));
+            displayCart();
+        }
+
+        // Function to remove an item from the cart
+        function removeItemFromCart(item) {
+            const cart = getCartFromStorage();
+            delete cart[item];
+            sessionStorage.setItem("cart", JSON.stringify(cart));
+            displayCart();
+        }
+
+        // Function to clear the entire cart
+        function clearCart() {
+            sessionStorage.removeItem("cart");
+            displayCart();
+        }
+
+        // Function to create the store and display available items
+        function createStore() {
+            const h2 = document.createElement("h2");
+            h2.textContent = "Available products:";
+            document.body.appendChild(h2);
+
+            const ul = document.createElement("ul");
+            availableItems.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                li.addEventListener("click", () => addItemToCart(item));
+                ul.appendChild(li);
+            });
+            document.body.appendChild(ul);
+        }
+
+        // Function to display the cart contents
+        function displayCart() {
+            const cart = getCartFromStorage();
+            const h2 = document.createElement("h2");
+            h2.textContent = "Your cart:";
+            document.body.appendChild(h2);
+
+            const cartDiv = document.createElement("div");
+
+            if (Object.keys(cart).length === 0) {
+                cartDiv.textContent = "Your cart is empty";
+            } else {
+                const ul = document.createElement("ul");
+                for (const item in cart) {
+                    const li = document.createElement("li");
+                    li.textContent = `${item} x ${cart[item]} `;
+                    const removeButton = document.createElement("button");
+                    removeButton.textContent = "(remove)";
+                    removeButton.addEventListener("click", () => removeItemFromCart(item));
+                    li.appendChild(removeButton);
+                    ul.appendChild(li);
+                }
+                cartDiv.appendChild(ul);
+            }
+
+            const clearButton = document.createElement("button");
+            clearButton.textContent = "Clear my cart";
+            clearButton.addEventListener("click", clearCart);
+            cartDiv.appendChild(clearButton);
+
+            // Remove any existing cart content and add the updated cart content
+            const existingCartDiv = document.querySelector(".cart-div");
+            if (existingCartDiv) {
+                existingCartDiv.remove();
+            }
+            cartDiv.classList.add("cart-div");
+            document.body.appendChild(cartDiv);
+        }
+    </script>
+</body>
+</html>

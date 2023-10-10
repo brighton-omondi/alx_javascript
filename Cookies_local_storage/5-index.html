@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <script>
+        // Check if local storage is available
+        function isLocalStorageAvailable() {
+            try {
+                const testKey = "test";
+                localStorage.setItem(testKey, testKey);
+                localStorage.removeItem(testKey);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Create an array of available items
+        const availableItems = ["Shampoo", "Soap", "Sponge", "Water"];
+
+        // Check if local storage is available
+        if (!isLocalStorageAvailable()) {
+            alert("Sorry, your browser does not support Web storage. Try again with a better one.");
+        } else {
+            // Call the main functions
+            createStore();
+            displayCart();
+        }
+
+        // Function to add an item to the cart
+        function addItemToCart(item) {
+            localStorage.setItem(item, true);
+            displayCart();
+        }
+
+        // Function to create the store and display available items
+        function createStore() {
+            const ul = document.createElement("ul");
+
+            availableItems.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                li.addEventListener("click", () => addItemToCart(item));
+                ul.appendChild(li);
+            });
+
+            document.body.appendChild(ul);
+        }
+
+        // Function to display the cart contents
+        function displayCart() {
+            const cartCount = Object.keys(localStorage).length - 1; // Subtract 1 to exclude the test key
+
+            if (cartCount > 0) {
+                const p = document.createElement("p");
+                p.textContent = `You previously had ${cartCount} item(s) in your cart.`;
+                document.body.appendChild(p);
+            }
+        }
+    </script>
+</body>
+</html>
