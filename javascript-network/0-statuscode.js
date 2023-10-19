@@ -1,18 +1,13 @@
-const axios = require('axios');
+const request = require('request');
 
-if (process.argv.length !== 3) {
-  console.error('Usage: node getStatus.js <URL>');
-  process.exit(1);
-}
-
+// Get the URL from command line arguments
 const url = process.argv[2];
 
-axios
-  .get(url)
-  .then((response) => {
-    console.log(`code: ${response.status}`);
-  })
-  .catch((error) => {
-    console.error(`An error occurred: ${error.message}`);
-    process.exit(1);
-  });
+// Send a GET request to the specified URL
+request(url, (error, response) => {
+  if (error) {
+    console.error(error.message);
+  } else {
+    console.log(`code: ${response.statusCode}`);
+  }
+});

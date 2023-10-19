@@ -1,34 +1,30 @@
-const fs = require('fs');
 const request = require('request');
+const fs = require('fs');
 
-if (process.argv.length !== 4) {
-  console.error('Usage: node fetchAndSavePage.js <URL> <outputFilePath>');
+// Get the URL and file path from command line arguments
+const url = process.argv[2];
+const filePath = process.argv[3];
+
+// Check if both URL and file path are provided
+if (!url || !filePath) {
+  console.error("Usage: node script.js <URL> <filePath>");
   process.exit(1);
 }
 
-const url = process.argv[2];
-const outputPath = process.argv[3];
-
-const writeToFile = (content) => {
-  fs.writeFile(outputPath, content, { encoding: 'utf-8' }, (err) => {
-    if (err) {
-      console.error(`Error writing to file: ${err}`);
-      process.exit(1);
-    }
-    console.log(`Page content saved to ${outputPath}`);
-  });
-};
-
+// Send a GET request to the specified URL
 request(url, (error, response, body) => {
   if (error) {
-    console.error(`An error occurred: ${error}`);
-    process.exit(1);
+    console.error(`Error requesting URL: ${error.message}`);
+  } else if (response.statusCode === 200) {
+    // Write the response body to the specified file
+    fs.writeFile(filePath, body, 'utf-8', (writeError) => {
+      if (writeError) {
+        console.error(`Error writing to file: ${writeError.message}`);
+      } else {
+        console.log(`File saved as ${filePath}`);
+      }
+    });
+  } else {
+    console.error(`Error: Received status code ${response.statusCode}`);
   }
-
-  if (response.statusCode !== 200) {
-    console.error(`HTTP Error: ${response.statusCode}`);
-    process.exit(1);
-  }
-
-  writeToFile(body);
 });
