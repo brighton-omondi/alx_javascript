@@ -1,18 +1,10 @@
-class Rectangle {
-    constructor(w, h) {
-      if (w <= 0 || h <= 0 || !Number.isInteger(w) || !Number.isInteger(h)) {
-        return {};
-      }
-  
-      this.width = w;
-      this.height = h;
-    }
+#!/usr/bin/node
+const Rectangle = require('./4-rectangle');
+
+class Square extends Rectangle {
+  constructor(size) {
+    super(size, size);
   }
-  
-  class Square extends Rectangle {
-    constructor(size) {
-      // Call the constructor of Rectangle with size for both width and height
-      super(size, size);
-    }
-  }
-  
+}
+
+module.exports = Square;
